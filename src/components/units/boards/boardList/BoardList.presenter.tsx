@@ -126,12 +126,14 @@ export default function BoardListPresenter(props: any) {
                     </S.Recruitment>
                     <S.Title>{el.title}</S.Title>
                   </S.Header>
-                  <S.Remark>{el.contents}</S.Remark>
+                  <S.Remark>{el.remark}</S.Remark>
                   <S.Footer>
-                    <S.Event>
-                      <S.EventIcon />
-                      {el.eventName}
-                    </S.Event>
+                    {el.eventCategory !== "일반" && (
+                      <S.Event>
+                        <S.EventIcon />
+                        {el.eventName}
+                      </S.Event>
+                    )}
                     <S.Category>
                       <S.CategoryIcon />
                       {el.eventCategory}
@@ -148,25 +150,33 @@ export default function BoardListPresenter(props: any) {
                 </S.ItemMain>
               </S.ItemLeft>
               {/* 널러블에러로인해 아래 옵셔널체이닝 */}
-              <S.ItemRight
-                requested={
-                  props.userData?.fetchLoginUser.id ===
-                  el.accompanyRequests?.reqUser?.id
-                }
-              >
-                {props.userData?.fetchLoginUser.id ===
-                el.accompanyRequests?.reqUser?.id ? (
-                  <>
-                    <S.PaperPlaneImage src="/icon/symbollogo_removebg.png" />
-                    <S.ItemRightText>요청중</S.ItemRightText>
-                  </>
-                ) : (
-                  <>
-                    <S.PaperPlaneImage src="/icon/simbollogo.png" />
-                    <S.ItemRightText>동행신청</S.ItemRightText>
-                  </>
-                )}
-              </S.ItemRight>
+              {props.userData?.fetchLoginUser.id !== el.writer.id && (
+                <S.ItemRight
+                  requested={
+                    props.userData &&
+                    props.userData?.fetchLoginUser.id ===
+                      el.accompanyRequests?.reqUser?.id
+                  }
+                >
+                  {props.userData &&
+                    (props.userData?.fetchLoginUser.id ===
+                    el.accompanyRequests?.reqUser?.id ? (
+                      <>
+                        <S.PaperPlaneImage src="/icon/symbollogo_removebg.png" />
+                        <S.ItemRightText>요청중</S.ItemRightText>
+                      </>
+                    ) : (
+                      <>
+                        <S.PaperPlaneImage src="/icon/simbollogo.png" />
+                        <S.ItemRightText
+                          onClick={props.onClickRequestAccompany(el.id)}
+                        >
+                          동행신청
+                        </S.ItemRightText>
+                      </>
+                    ))}
+                </S.ItemRight>
+              )}
             </S.Item>
           ))}
         </S.ListWrapper>
